@@ -13,24 +13,71 @@ const getTodos = {
         "content": {
           "application/json": {
             schema: {
-              type: "array",
-              items: {
-                id: {
-                  type: 'integer',
-                  description: 'ID del pendiente'
-                },
-                nombre: {
-                  type: 'string',
-                  description: 'Nombre del pendiente'
-                },
-                descripcion: {
-                  type: 'string',
-                  description: 'Descripción del pendiente'
-                },
-                fecha: {
-                  type: 'string',
-                  format: 'date',
-                  description: 'Fecha del pendiente'
+              type: "object",
+              properties: {
+                todos: {
+                  type: "array",
+                  items: {
+                    $ref: "#/components/schemas/TodoResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const getTodo = {
+    tags: ['Todos'],
+    description: "Obtiene un pendiente por su ID",
+    operationId: 'getTodo',
+    parameters: [
+      {
+        name: "id",
+        in: "path",
+        required: true,
+        schema: {
+          type: "integer"
+        },
+        description: "ID del pendiente"
+      }
+    ],
+    security: [
+      {
+        bearerAuth: []
+      }
+    ],
+    responses: {
+      "200": {
+        description: "Pendiente encontrado",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                todo: {
+                  type: "array",
+                  items: {
+                    $ref: "#/components/schemas/TodoResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        description: "Pendiente no encontrado",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "Pendiente no encontrado"
                 }
               }
             }
@@ -44,21 +91,156 @@ const getTodos = {
     tags: ['Todos'],
     description: "Crear un nuevo pendiente",
     operationId: 'postTodos',
-    consumes: [
-      "application/json"
+    requestBody: {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/TodoRequest"
+          }
+        }
+      }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
     ],
-    produces: [
-      "application/json"
-    ],
+    responses: {
+      "200": {
+        description: "Pendiente creado exitosamente",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                todo: {
+                  type: "array",
+                  items: {
+                    $ref: "#/components/schemas/TodoResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        description: "Error al crear el pendiente",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "Error al crear el pendiente"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const updateTodo = {
+    tags: ['Todos'],
+    description: "Actualizar un pendiente existente",
+    operationId: 'updateTodo',
     parameters: [
       {
-        in: "body",
-        name: "body",
+        name: "id",
+        in: "path",
         required: true,
         schema: {
-          $ref: "#/components/schemas/todo"
+          type: "integer"
         },
-        description: "Datos del nuevo pendiente"
+        description: "ID del pendiente a actualizar"
+      }
+    ],
+    requestBody: {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/TodoRequest"
+          }
+        }
+      }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
+    ],
+    responses: {
+      "200": {
+        description: "Pendiente actualizado exitosamente",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                todo: {
+                  type: "array",
+                  items: {
+                    $ref: "#/components/schemas/TodoResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        description: "Pendiente no encontrado",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "Pendiente no encontrado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        description: "Error al actualizar el pendiente",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "Error al actualizar el pendiente"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const deleteTodo = {
+    tags: ['Todos'],
+    description: "Eliminar un pendiente",
+    operationId: 'deleteTodo',
+    parameters: [
+      {
+        name: "id",
+        in: "path",
+        required: true,
+        schema: {
+          type: "integer"
+        },
+        description: "ID del pendiente a eliminar"
       }
     ],
     security: [
@@ -67,27 +249,55 @@ const getTodos = {
       }
     ],
     responses: {
-      "201": {
-        description: "Pendiente creado exitosamente",
+      "200": {
+        description: "Pendiente eliminado exitosamente",
         "content": {
           "application/json": {
             schema: {
-              id: {
-                type: 'integer',
-                description: 'ID del pendiente creado'
-              },
-              nombre: {
-                type: 'string',
-                description: 'Nombre del pendiente'
-              },
-              descripcion: {
-                type: 'string',
-                description: 'Descripción del pendiente'
-              },
-              fecha: {
-                type: 'string',
-                format: 'date',
-                description: 'Fecha del pendiente'
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "Pendiente eliminado correctamente"
+                },
+                todo: {
+                  type: "array",
+                  items: {
+                    $ref: "#/components/schemas/TodoResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        description: "Pendiente no encontrado",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "Pendiente no encontrado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        description: "Error al eliminar el pendiente",
+        "content": {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: {
+                  type: "string",
+                  example: "Error al eliminar el pendiente"
+                }
               }
             }
           }
@@ -98,7 +308,7 @@ const getTodos = {
   
   const swaggerDocument = {
     definition: {
-      swagger: "2.0",
+      openapi: "3.0.0",
       info: {
         title: "API de Pendientes - Express con Swagger",
         version: "1.0.0",
@@ -116,24 +326,7 @@ const getTodos = {
       servers: [
         {
           url: "http://localhost:3000",
-          description: "Servidor de desarrollo - API de Pendientes",
-          variables: {
-            env: {
-              default: "app-dev",
-              description: "Ambiente de Desarrollo"
-            },
-            port: {
-              enum: [
-                "8443",
-                "3000",
-                "443"
-              ],
-              default: "3000"
-            },
-            basePath: {
-              default: "v1"
-            }
-          }
+          description: "Servidor de desarrollo - API de Pendientes"
         }
       ],
       tags: [
@@ -143,16 +336,26 @@ const getTodos = {
         }
       ],
       paths: {
-        "/todos": {
+        "/pendientes": {
           "get": getTodos
         },
-        "/todos/add": {
+        "/pendientes/{id}": {
+          "get": getTodo
+        },
+        "/pendientes/add": {
           "post": postTodos
+        },
+        "/pendientes/update/{id}": {
+          "put": updateTodo
+        },
+        "/pendientes/delete/{id}": {
+          "delete": deleteTodo
         }
       },
       components: {
         schemas: {
-          todo: {
+          TodoRequest: {
+            type: "object",
             required: [
               "nombre",
               "fecha"
@@ -175,6 +378,39 @@ const getTodos = {
                 example: "2025-11-15"
               }
             }
+          },
+          TodoResponse: {
+            type: "object",
+            properties: {
+              id: {
+                type: "integer",
+                description: "ID único del pendiente",
+                example: 1
+              },
+              nombre: {
+                type: "string",
+                description: "Nombre del pendiente",
+                example: "Completar reporte mensual"
+              },
+              descripcion: {
+                type: "string",
+                description: "Descripción detallada del pendiente",
+                example: "Elaborar y enviar el reporte de actividades del mes"
+              },
+              fecha: {
+                type: "string",
+                format: "date",
+                description: "Fecha del pendiente (YYYY-MM-DD)",
+                example: "2025-11-15"
+              }
+            }
+          }
+        },
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT"
           }
         }
       }
@@ -183,4 +419,3 @@ const getTodos = {
   };
   
   module.exports = { swaggerDocument };
-  
