@@ -11,7 +11,7 @@ module.exports = {
     },
     
     getTodo: async (req, res) => {
-        const id = parseInt(req.params.id);  // ✅ Convertir a número primero
+        const id = parseInt(req.params.id); 
         
         if (!Number.isInteger(id)) {
             return res.json({"message": "El Id necesita ser entero"});
@@ -20,7 +20,7 @@ module.exports = {
         try {
             const todo = await TodoServices.getTodo(id);
             
-            // ✅ Verificar si el resultado está vacío
+            // Verificar si el resultado está vacío
             if (!todo || todo.length === 0) {
                 return res.status(404).json({"message": "Pendiente no encontrado"});
             }
@@ -41,7 +41,7 @@ module.exports = {
     },
     
     updateTodo: async (req, res) => {
-        const id = parseInt(req.params.id);  // ✅ Convertir a número primero
+        const id = parseInt(req.params.id);  // Convertir a número primero
         
         if (!Number.isInteger(id)) {
             return res.status(500).json({"message": "El Id necesita ser entero"});
@@ -50,7 +50,7 @@ module.exports = {
         try {
             const todo = await TodoServices.updateTodo(id, req.body);
             
-            // ✅ Verificar si el resultado está vacío
+            // Verificar si el resultado está vacío
             if (!todo || todo.length === 0) {
                 return res.status(404).json({"message": "Pendiente no encontrado"});
             }
@@ -62,7 +62,7 @@ module.exports = {
     },
     
     deleteTodo: async (req, res) => {
-        const id = parseInt(req.params.id);  // ✅ Convertir a número primero
+        const id = parseInt(req.params.id);  // Convertir a número primero
         
         if (!Number.isInteger(id)) {
             return res.status(500).json({"message": "El Id necesita ser entero"});
@@ -71,7 +71,7 @@ module.exports = {
         try {
             const todo = await TodoServices.deleteTodo(id);
             
-            // ✅ Verificar si el resultado está vacío
+            // Verificar si el resultado está vacío
             if (!todo || todo.length === 0) {
                 return res.status(404).json({"message": "Pendiente no encontrado"});
             }
